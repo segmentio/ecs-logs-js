@@ -1,5 +1,5 @@
 ## ecs-logs-js
-**Example**  
+**Basic usage**
 ```js
 var log = require('ecs-logs-js');
 
@@ -11,7 +11,7 @@ log.info('Hi there!');
 The Logger type is a winston logger with preconfigured defaults to output
 log messages compatible with ecs-logs.
 
-**Example**  
+**Creating and using a Logger**
 ```js
 var ecslogs = require('ecs-logs-js');
 
@@ -26,7 +26,7 @@ log.info('Hi there!');
 The Transport type implements a winston log transport preconfigured to
 output log messages compatible with ecs-logs.
 
-**Example**  
+**Creating and using a Transport in a winston logger**
 ```js
 var eslogs = require('ecs-logs-js');
 var winston = require('winston');
@@ -50,7 +50,7 @@ When a formatter instance is called it accepts a log entry as argument and
 returns a JSON representation of the entry in a format compatible with
 ecs-logs.
 
-**Example**  
+**Creating and using a Formatter in a winston logger**
 ```js
 var eslogs = require('ecs-logs-js');
 var winston = require('winston');
@@ -66,7 +66,7 @@ var logger = new winston.Logger({
   ]
 });
 ```
-**Example**  
+**Using a Formatter to serialize log entries**
 ```js
 var eslogs = require('ecs-logs-js');
 var formatter = new ecslogs.Formatter();
