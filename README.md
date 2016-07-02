@@ -59,9 +59,8 @@ var winston = require('winston');
 var logger = new winston.Logger({
   transports: [
     new winston.transports.Console({
-        timestamp: Date.now,
-        formatter: new ecslogs.Formatter()
-      }
+      timestamp: Date.now,
+      formatter: new ecslogs.Formatter()
     })
   ]
 });
