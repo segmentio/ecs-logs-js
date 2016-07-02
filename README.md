@@ -1,4 +1,4 @@
-## ecs-logs-js
+## ecs-logs-js [![CircleCI](https://circleci.com/gh/segmentio/ecs-logs-js.svg?style=shield)](https://circleci.com/gh/segmentio/ecs-logs-js)
 **Basic usage**
 ```js
 var log = require('ecs-logs-js');
