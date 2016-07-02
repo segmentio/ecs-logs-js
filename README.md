@@ -28,7 +28,7 @@ output log messages compatible with ecs-logs.
 
 **Creating and using a Transport in a winston logger**
 ```js
-var eslogs = require('ecs-logs-js');
+var ecslogs = require('ecs-logs-js');
 var winston = require('winston');
 
 // Instantiate an ecs-logs compatible winston logger with ecslogs.Transport
@@ -52,7 +52,7 @@ ecs-logs.
 
 **Creating and using a Formatter in a winston logger**
 ```js
-var eslogs = require('ecs-logs-js');
+var ecslogs = require('ecs-logs-js');
 var winston = require('winston');
 
 // Instantiate an ecs-logs compatible winston logger with ecslogs.Formatter
@@ -67,7 +67,7 @@ var logger = new winston.Logger({
 ```
 **Using a Formatter to serialize log entries**
 ```js
-var eslogs = require('ecs-logs-js');
+var ecslogs = require('ecs-logs-js');
 var formatter = new ecslogs.Formatter();
 
 // Returns a serialized log message compatible with ecs-logs.
