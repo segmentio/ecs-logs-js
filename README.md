@@ -1,4 +1,4 @@
-## ecs-logs-js [![CircleCI](https://circleci.com/gh/segmentio/ecs-logs-js.svg?style=shield)](https://circleci.com/gh/segmentio/ecs-logs-js)
+# ecs-logs-js [![CircleCI](https://circleci.com/gh/segmentio/ecs-logs-js.svg?style=shield)](https://circleci.com/gh/segmentio/ecs-logs-js)
 **Basic usage**
 ```js
 var log = require('ecs-logs-js');
@@ -7,7 +7,7 @@ log.debug('debug message, not logged if NODE_ENV=production');
 log.info('Hi there!');
 ```
 
-### Logger
+## Logger
 The Logger type is a winston logger with preconfigured defaults to output
 log messages compatible with ecs-logs.
 
@@ -22,7 +22,7 @@ var log = new ecslogs.Logger({
 log.info('Hi there!');
 ```
 
-### Transport
+## Transport
 The Transport type implements a winston log transport preconfigured to
 output log messages compatible with ecs-logs.
 
@@ -39,7 +39,7 @@ var logger = new winston.Logger({
 });
 ```
 
-### Formatter
+## Formatter
 The Formatter type implements a winston log formatter that produces messages
 compatible with ecs-logs.
 
