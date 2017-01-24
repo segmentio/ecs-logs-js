@@ -353,7 +353,46 @@ describe('logger', function() {
       ]);
     });
 
-    it('should not produce log messages bellow warnings', function() {
+    it('should produce log messages with top-level errors', function() {
+      var messages = [];
+      var logger = new ecslogs.Logger({
+        output: function(msg) {
+          messages.push(JSON.parse(msg))
+        },
+        timestamp: now,
+        hostname: 'localhost'
+      });
+
+      logger.error('something went wrong', new TestError('oops!'));
+
+      assert.deepEqual(messages, [
+        {
+          level: 'ERROR',
+          time: '2016-07-02T21:11:47.000Z',
+          info: {
+            host: 'localhost',
+            errors: [
+              {
+                type: 'TestError',
+                error: 'oops!',
+                stack: [
+                  'at test3 (test.js:3:1)',
+                  'at test2 (test.js:2:1)',
+                  'at test1 (test.js:1:1)'
+                ],
+              }
+            ]
+          },
+          data: {
+            message: 'oops!',
+            stack: "Error: oops!\n\tat test3 (test.js:3:1)\n\tat test2 (test.js:2:1)\n\tat test1 (test.js:1:1)\n"
+          },
+          message: 'something went wrong'
+        }
+      ]);
+    });
+
+    it('should not produce log messages below warnings', function() {
       var messages = [];
       var logger = new ecslogs.Logger({
         output: function(msg) {
