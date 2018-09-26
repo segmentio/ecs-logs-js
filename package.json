@@ -23,6 +23,7 @@
   "author": "Achille Roussel",
   "license": "MIT",
   "dependencies": {
+    "safe-json-stringify": "^1.2.0",
     "type-name": "^2.0.1",
     "winston": "^2.2.0"
   },
