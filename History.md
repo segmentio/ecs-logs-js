@@ -1,3 +1,9 @@
+
+0.2.1 / 2018-09-26
+==================
+
+  * feat: safe-json-stringify for encoding log events (#3)
+
 0.2.0
 =====
 
