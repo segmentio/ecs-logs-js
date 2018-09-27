@@ -1,4 +1,9 @@
 
+0.2.2 / 2018-09-26
+==================
+
+  * refactor: switch to a more mature json-stringify-safe
+
 0.2.1 / 2018-09-26
 ==================
 
