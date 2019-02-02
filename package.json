@@ -1,6 +1,6 @@
 {
   "name": "ecs-logs-js",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Logger based on winston formatting messages compatible with ecs-logs",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
