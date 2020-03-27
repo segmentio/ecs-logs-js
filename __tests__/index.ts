@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { advanceTo } from 'jest-date-mock'
-import Logger from '../src'
+import { Logger } from '../src'
 
 advanceTo('2019-01-01T00:00:00.000Z')
 

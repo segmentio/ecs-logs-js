@@ -72,7 +72,7 @@ export interface LoggerOptions {
   devMode?: boolean
 }
 
-export default class Logger {
+export class Logger {
   level: LEVEL = 'debug'
   devMode = process.env.NODE_ENV === 'development'
 
