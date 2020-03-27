@@ -1,8 +1,0 @@
-machine:
-  node:
-    version: 6.9.2
-
-test:
-  override:
-    - make lint
-    - make test

@@ -1,81 +1,27 @@
-# ecs-logs-js [![CircleCI](https://circleci.com/gh/segmentio/ecs-logs-js.svg?style=shield)](https://circleci.com/gh/segmentio/ecs-logs-js)
-**Basic usage**
-```js
-var log = require('ecs-logs-js');
+# ecs-logs-js
 
-log.debug('debug message, not logged if NODE_ENV=production');
-log.info('Hi there!');
+A simple Node.js console logger that outputs human friendly messages in development and [ecs-logs](https://github.com/segmentio/ecs-logs) compatible messages in production. Supports all object types, including those that can't be JSON stringified like Error, Map, Set and BigInt.
+
+TypeScript types are also included in the package.
+
+## Install
+
+```shell
+yarn add ecs-logs-js
+# or
+npm install ecs-logs-js
 ```
 
-## Logger
-The Logger type is a winston logger with preconfigured defaults to output
-log messages compatible with ecs-logs.
+## Usage
 
-**Creating and using a Logger**
 ```js
-var ecslogs = require('ecs-logs-js');
+import Logger from 'ecs-logs-js'
 
-var log = new ecslogs.Logger({
-  level: 'info'
-});
-
-log.info('Hi there!');
+const logger = new Logger()
+logger.info('Server started at http://localhost:8000')
+logger.error('🚨 Test error', new Error('test'))
 ```
 
-## Transport
-The Transport type implements a winston log transport preconfigured to
-output log messages compatible with ecs-logs.
+## API
 
-**Creating and using a Transport in a winston logger**
-```js
-var ecslogs = require('ecs-logs-js');
-var winston = require('winston');
-
-// Instantiate an ecs-logs compatible winston logger with ecslogs.Transport
-var logger = new winston.Logger({
-  transports: [
-    new ecslogs.Transport()
-  ]
-});
-```
-
-## Formatter
-The Formatter type implements a winston log formatter that produces messages
-compatible with ecs-logs.
-
-The object returned when instantiating the Formatter type is callable. When
-called, it expects a log entry object.
-
-When a formatter instance is called it accepts a log entry as argument and
-returns a JSON representation of the entry in a format compatible with
-ecs-logs.
-
-**Creating and using a Formatter in a winston logger**
-```js
-var ecslogs = require('ecs-logs-js');
-var winston = require('winston');
-
-// Instantiate an ecs-logs compatible winston logger with ecslogs.Formatter
-var logger = new winston.Logger({
-  transports: [
-    new winston.transports.Console({
-      timestamp: Date.now,
-      formatter: new ecslogs.Formatter()
-    })
-  ]
-});
-```
-**Using a Formatter to serialize log entries**
-```js
-var ecslogs = require('ecs-logs-js');
-var formatter = new ecslogs.Formatter();
-
-// Returns a serialized log message compatible with ecs-logs.
-var s = formatter({
-  message: 'the log message',
-  level: 'info',
-  meta: {
-    'User-Agent': 'node'
-  }
-});
-```
+## Development

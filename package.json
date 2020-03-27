@@ -1,19 +1,10 @@
 {
   "name": "ecs-logs-js",
-  "version": "0.2.3",
-  "description": "Logger based on winston formatting messages compatible with ecs-logs",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "scripts": {
-    "test": "mocha"
-  },
-  "repository": {
-    "type": "git",
-    "url": "github.com/segmentio/ecs-logs-js"
-  },
+  "version": "1.0.0",
+  "description": "Simple Node.js console logger that outputs human friendly and ecs-logs compatible messages",
+  "author": "Roland Warmerdam (https://roland.codes)",
   "keywords": [
     "ecs-logs",
-    "ecs-logs-js",
     "log",
     "logger",
     "logging",
@@ -21,16 +12,94 @@
     "AWS",
     "segment"
   ],
-  "author": "Achille Roussel",
+  "repository": "segmentio/ecs-logs-js",
   "license": "MIT",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist/src",
+    "src"
+  ],
+  "scripts": {
+    "prepublishOnly": "yarn clean && yarn build",
+    "test": "jest",
+    "lint": "eslint '**/*.ts'",
+    "build": "tsc",
+    "clean": "rimraf dist"
+  },
+  "engines": {
+    "node": ">=10"
+  },
   "dependencies": {
-    "json-stringify-safe": "^5.0.1",
-    "type-name": "^2.0.1",
-    "winston": "^2.2.0"
+    "chalk": "^3.0.0",
+    "extract-stack": "^2.0.0",
+    "fast-safe-stringify": "^2.0.7",
+    "js-yaml": "^3.13.1",
+    "replace-string": "^3.0.0",
+    "serialize-error": "^6.0.0"
   },
   "devDependencies": {
-    "eslint": "^3.0.0",
-    "eslint-config-google": "^0.6.0",
-    "mocha": "^2.5.3"
+    "@types/jest": "^25.1.4",
+    "@types/js-yaml": "^3.12.3",
+    "@types/node": "^10",
+    "@typescript-eslint/eslint-plugin": "^2.3.1",
+    "@typescript-eslint/parser": "^2.3.1",
+    "eslint": "^6.4.0",
+    "eslint-config-prettier": "^6.3.0",
+    "husky": "^4.2.3",
+    "jest": "^25.2.3",
+    "jest-date-mock": "^1.0.8",
+    "lint-staged": "^10.0.9",
+    "prettier": "^2.0.2",
+    "rimraf": "^3.0.0",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.6.3"
+  },
+  "eslintIgnore": [
+    "/dist/"
+  ],
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking",
+      "prettier",
+      "prettier/@typescript-eslint"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "env": {
+      "node": true,
+      "jest": true
+    }
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 120
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "clearMocks": true,
+    "testPathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{yml,md,json}": [
+      "prettier --write"
+    ]
   }
 }
