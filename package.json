@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "prepublishOnly": "yarn clean && yarn build",
-    "test": "jest",
+    "test": "FORCE_COLOR=1 jest",
     "lint": "eslint '**/*.ts'",
     "build": "tsc",
     "clean": "rimraf dist"
