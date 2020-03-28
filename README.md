@@ -1,81 +1,110 @@
-# ecs-logs-js [![CircleCI](https://circleci.com/gh/segmentio/ecs-logs-js.svg?style=shield)](https://circleci.com/gh/segmentio/ecs-logs-js)
-**Basic usage**
-```js
-var log = require('ecs-logs-js');
+# ecs-logs-js
 
-log.debug('debug message, not logged if NODE_ENV=production');
-log.info('Hi there!');
+A simple Node.js console logger that outputs human friendly messages in development and [ecs-logs](https://github.com/segmentio/ecs-logs) compatible messages in production. Supports all object types, including those that can't be JSON stringified like Error, Map, Set and BigInt.
+
+TypeScript types are also included in the package.
+
+<img src="./example.png" alt="Development log output example" width="713" />
+
+## Install
+
+```shell
+yarn add ecs-logs-js
+# or
+npm install ecs-logs-js
 ```
 
-## Logger
-The Logger type is a winston logger with preconfigured defaults to output
-log messages compatible with ecs-logs.
+## Usage
 
-**Creating and using a Logger**
 ```js
-var ecslogs = require('ecs-logs-js');
+import { Logger } from 'ecs-logs-js'
 
-var log = new ecslogs.Logger({
-  level: 'info'
-});
-
-log.info('Hi there!');
+const logger = new Logger({ devMode: true })
+logger.info('Server started at http://localhost:8000')
+logger.warn('Request rate limited', { ip: '127.0.0.1' })
+logger.error('🚨 Unexpected Error', new Error('Failed to connect to Postgress'))
 ```
 
-## Transport
-The Transport type implements a winston log transport preconfigured to
-output log messages compatible with ecs-logs.
+## API
 
-**Creating and using a Transport in a winston logger**
-```js
-var ecslogs = require('ecs-logs-js');
-var winston = require('winston');
+### new Logger(options?)
 
-// Instantiate an ecs-logs compatible winston logger with ecslogs.Transport
-var logger = new winston.Logger({
-  transports: [
-    new ecslogs.Transport()
-  ]
-});
-```
+#### options
 
-## Formatter
-The Formatter type implements a winston log formatter that produces messages
-compatible with ecs-logs.
+Type: `object`
 
-The object returned when instantiating the Formatter type is callable. When
-called, it expects a log entry object.
+##### level
 
-When a formatter instance is called it accepts a log entry as argument and
-returns a JSON representation of the entry in a format compatible with
-ecs-logs.
+Type: `'emerg' | 'alert' | 'crit' | 'error' | 'warn' | 'notice' | 'info' | 'debug'`<br />
+Default: `'debug'`
 
-**Creating and using a Formatter in a winston logger**
-```js
-var ecslogs = require('ecs-logs-js');
-var winston = require('winston');
+Sets the max log level to output. By setting this option to `'info'`, it can be used to disable debug logs in production.
 
-// Instantiate an ecs-logs compatible winston logger with ecslogs.Formatter
-var logger = new winston.Logger({
-  transports: [
-    new winston.transports.Console({
-      timestamp: Date.now,
-      formatter: new ecslogs.Formatter()
-    })
-  ]
-});
-```
-**Using a Formatter to serialize log entries**
-```js
-var ecslogs = require('ecs-logs-js');
-var formatter = new ecslogs.Formatter();
+##### devMode
 
-// Returns a serialized log message compatible with ecs-logs.
-var s = formatter({
-  message: 'the log message',
-  level: 'info',
-  meta: {
-    'User-Agent': 'node'
-  }
-});
-```
+Type: `boolean`<br />
+Default: `process.env.NODE_ENV === 'development'`
+
+Enables the human friendly development output.
+
+### logger.log(level, message, data?)
+
+Logs a message at the given log level.
+
+#### level
+
+Type: `'emerg' | 'alert' | 'crit' | 'error' | 'warn' | 'notice' | 'info' | 'debug'`
+
+Log level for the message.
+
+#### message
+
+Type: `string`
+
+The message to log.
+
+#### data
+
+Type: `any`
+
+Any additional data to log with the message. This can be any type.
+
+### logger.emerg(message, data?)
+
+### logger.alert(message, data?)
+
+### logger.crit(message, data?)
+
+### logger.error(message, data?)
+
+### logger.warn(message, data?)
+
+### logger.notice(message, data?)
+
+### logger.info(message, data?)
+
+### logger.debug(message, data?)
+
+Logs a message at the respective log level.
+
+#### message
+
+Type: `string`
+
+The message to log.
+
+#### data
+
+Type: `any`
+
+Any additional data to log with the message. This can be any type.
+
+## Development
+
+Make sure you have [Node >=10](https://nodejs.org) and [Yarn](https://classic.yarnpkg.com/en/docs/install) installed, and then run `yarn install` to install the development dependencies.
+
+To run the tests use `yarn test`. To run the tests in watch mode use `yarn test --watch`.
+
+To lint the files use `yarn lint`.
+
+To compile the TypeScript files use `yarn build`.
