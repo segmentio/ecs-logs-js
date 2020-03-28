@@ -16,7 +16,7 @@ const LEVELS_MAP = {
   debug: 7,
 }
 
-/** Available levels */
+/** Available log levels. */
 export type LEVEL = keyof typeof LEVELS_MAP
 
 interface LogLine {
@@ -59,19 +59,21 @@ function jsonStringifyReplacer(_key: string, value: unknown): any {
   return value
 }
 
+/** Options that can be passed to the Logger constructor. */
 export interface LoggerOptions {
   /**
-   * Configures the minimum level a log has to be in order to be output
+   * Sets the maximum log level that will be output. By setting this option to 'info', it can be used to disable debug logs in production.
    * @default 'debug'
    */
   level?: LEVEL | string
   /**
-   * Configures whether human friendly logs are output
+   * Enables the human friendly development output.
    * @default process.env.NODE_ENV === 'development'
    */
   devMode?: boolean
 }
 
+/** Creates a new logger instance. */
 export class Logger {
   level: LEVEL = 'debug'
   devMode = process.env.NODE_ENV === 'development'
@@ -87,7 +89,12 @@ export class Logger {
     }
   }
 
-  /** Logs a message with some optional data */
+  /**
+   * Logs a message at the given log level.
+   * @param level Log level for the message.
+   * @param message The message to log.
+   * @param data Any additional data to log with the message. This can be any type.
+   */
   log = (level: LEVEL, message: string, data?: unknown): void => {
     if (LEVELS_MAP[level] > LEVELS_MAP[this.level]) {
       return
@@ -137,42 +144,74 @@ export class Logger {
     process.stdout.write(logLine + '\n')
   }
 
-  /** Logs a message at the EMERG level with some optional data */
+  /**
+   * Logs a message at the EMERG log level.
+   * @param message The message to log.
+   * @param data Any additional data to log with the message. This can be any type.
+   */
   emerg = (message: string, data?: unknown): void => {
     this.log('emerg', message, data)
   }
 
-  /** Logs a message at the ALERT level with some optional data */
+  /**
+   * Logs a message at the ALERT log level.
+   * @param message The message to log.
+   * @param data Any additional data to log with the message. This can be any type.
+   */
   alert = (message: string, data?: unknown): void => {
     this.log('alert', message, data)
   }
 
-  /** Logs a message at the CRIT level with some optional data */
+  /**
+   * Logs a message at the CRIT log level.
+   * @param message The message to log.
+   * @param data Any additional data to log with the message. This can be any type.
+   */
   crit = (message: string, data?: unknown): void => {
     this.log('crit', message, data)
   }
 
-  /** Logs a message at the ERROR level with some optional data */
+  /**
+   * Logs a message at the ERROR log level.
+   * @param message The message to log.
+   * @param data Any additional data to log with the message. This can be any type.
+   */
   error = (message: string, data?: unknown): void => {
     this.log('error', message, data)
   }
 
-  /** Logs a message at the WARN level with some optional data */
+  /**
+   * Logs a message at the WARN log level.
+   * @param message The message to log.
+   * @param data Any additional data to log with the message. This can be any type.
+   */
   warn = (message: string, data?: unknown): void => {
     this.log('warn', message, data)
   }
 
-  /** Logs a message at the NOTICE level with some optional data */
+  /**
+   * Logs a message at the NOTICE log level.
+   * @param message The message to log.
+   * @param data Any additional data to log with the message. This can be any type.
+   */
   notice = (message: string, data?: unknown): void => {
     this.log('notice', message, data)
   }
 
-  /** Logs a message at the INFO level with some optional data */
+  /**
+   * Logs a message at the INFO log level.
+   * @param message The message to log.
+   * @param data Any additional data to log with the message. This can be any type.
+   */
   info = (message: string, data?: unknown): void => {
     this.log('info', message, data)
   }
 
-  /** Logs a message at the DEBUG level with some optional data */
+  /**
+   * Logs a message at the DEBUG log level.
+   * @param message The message to log.
+   * @param data Any additional data to log with the message. This can be any type.
+   */
   debug = (message: string, data?: unknown): void => {
     this.log('debug', message, data)
   }

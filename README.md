@@ -29,6 +29,8 @@ logger.error('🚨 Unexpected Error', new Error('Failed to connect to Postgress'
 
 ### new Logger(options?)
 
+Creates a new logger instance.
+
 #### options
 
 Type: `object`
@@ -38,7 +40,7 @@ Type: `object`
 Type: `'emerg' | 'alert' | 'crit' | 'error' | 'warn' | 'notice' | 'info' | 'debug'`<br />
 Default: `'debug'`
 
-Sets the max log level to output. By setting this option to `'info'`, it can be used to disable debug logs in production.
+Sets the maximum log level that will be output. By setting this option to 'info', it can be used to disable debug logs in production.
 
 ##### devMode
 
