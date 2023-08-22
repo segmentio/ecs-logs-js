@@ -1,5 +1,8 @@
 # ecs-logs-js
 
+> **Note**  
+> Segment has paused maintenance on this project, but may return it to an active status in the future. Issues and pull requests from external contributors are not being considered, although internal contributions may appear from time to time. The project remains available under its open source license for anyone to use.
+
 A simple Node.js console logger that outputs human friendly messages in development and [ecs-logs](https://github.com/segmentio/ecs-logs) compatible messages in production. Supports all of Node's primitive data types, including those that can't be JSON stringified like Error, Map, Set and BigInt.
 
 TypeScript types are also included in the package.
