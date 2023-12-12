@@ -105,12 +105,12 @@ test('handles Errors', () => {
   logger.log('info', 'test', { error: new Error('Request timeout') })
 
   expect(spy).toHaveBeenCalled()
-  const log = JSON.parse(spy.mock.calls[0][0])
+  const log = JSON.parse(spy.mock.calls[0][0] as string)
   expect(log).toMatchObject({
     data: {
       error: {
         message: 'Request timeout',
-        name: 'Error',
+        name: 'ErrorArrayStack',
       },
     },
     level: 'INFO',
@@ -127,11 +127,11 @@ test('handles Errors at the top level', () => {
   logger.log('info', 'test', new Error('Request timeout'))
 
   expect(spy).toHaveBeenCalled()
-  const log = JSON.parse(spy.mock.calls[0][0])
+  const log = JSON.parse(spy.mock.calls[0][0] as string)
   expect(log).toMatchObject({
     data: {
       message: 'Request timeout',
-      name: 'Error',
+      name: 'ErrorArrayStack',
     },
     level: 'INFO',
     message: 'test',
@@ -148,7 +148,7 @@ test('logs additional properties on Errors', () => {
   logger.log('info', 'test', { error })
 
   expect(spy).toHaveBeenCalled()
-  const log = JSON.parse(spy.mock.calls[0][0])
+  const log = JSON.parse(spy.mock.calls[0][0] as string)
   expect(log).toHaveProperty('data.error.serviceName')
 })
 

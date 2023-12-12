@@ -33,6 +33,20 @@ function validateLevel(level: string): asserts level is LEVEL {
   }
 }
 
+class ErrorArrayStack {
+  stack: string[];
+  message: string;
+  name: string;
+
+  [key: string]: any;
+
+  constructor(message: string, stack: string[]) {
+    this.message = message;
+    this.name = 'ErrorArrayStack';
+    this.stack = stack;
+  }
+}
+
 /** JSON.stringify replacer that converts unstringifyable values to stringifyable ones */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function jsonStringifyReplacer(_key: string, value: unknown): any {
@@ -52,8 +66,13 @@ function jsonStringifyReplacer(_key: string, value: unknown): any {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const serializedError: any = serializeError(value)
     // Tidy up the stack trace a bit and convert it to an array
-    serializedError.stack = extractStack.lines(value)
-    return serializedError
+    const s = new ErrorArrayStack(serializedError.message || '', extractStack.lines(value))
+    for (let key in value) {
+      if (value.hasOwnProperty(key) && key !== 'message' && key !== 'stack' && key !== 'name') {
+        s[key] = (value as {[key: string]: any})[key];
+      }
+    }
+    return s;
   }
 
   return value
