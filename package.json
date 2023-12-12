@@ -55,6 +55,11 @@
     "ts-jest": "^25.2.1",
     "typescript": "^3.6.3"
   },
+  "resolutions": {
+    "@babel/traverse": "^7.23.6",
+    "json-schema": "^0.4.0",
+    "minimist": "^1.2.8"
+  },
   "eslintIgnore": [
     "/dist/"
   ],
