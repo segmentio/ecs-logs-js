@@ -38,6 +38,7 @@ class ErrorArrayStack {
   message: string;
   name: string;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 
   constructor(message: string, stack: string[]) {
@@ -63,12 +64,12 @@ function jsonStringifyReplacer(_key: string, value: unknown): any {
   }
 
   if (value instanceof Error) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const serializedError: any = serializeError(value)
+    const serializedError = serializeError(value)
     // Tidy up the stack trace a bit and convert it to an array
     const s = new ErrorArrayStack(serializedError.message || '', extractStack.lines(value))
-    for (let key in value) {
-      if (value.hasOwnProperty(key) && key !== 'message' && key !== 'stack' && key !== 'name') {
+    for (const key in value) {
+      if (Object.prototype.hasOwnProperty.call(value, key) && key !== 'message' && key !== 'stack' && key !== 'name') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
         s[key] = (value as {[key: string]: any})[key];
       }
     }
@@ -84,7 +85,7 @@ export interface LoggerOptions {
    * Sets the maximum log level that will be output. By setting this option to 'info', it can be used to disable debug logs in production.
    * @default 'debug'
    */
-  level?: LEVEL | string
+  level?: LEVEL
   /**
    * Enables the human friendly development output.
    * @default process.env.NODE_ENV === 'development'
@@ -133,7 +134,7 @@ export class Logger {
     if (this.devMode) {
       // Construct the main log line and add some highlighting styles
       // Just parse the production log because it already has all the data conversions applied
-      const log: LogLine = JSON.parse(logLine)
+      const log: LogLine = JSON.parse(logLine) as LogLine
       logLine = chalk.bold(`\n${log.level}: ${log.message}`)
 
       if (level === 'warn') {

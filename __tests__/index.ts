@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { advanceTo } from 'jest-date-mock'
-import { Logger } from '../src'
+import { Logger, LEVEL } from '../src'
 
 advanceTo('2019-01-01T00:00:00.000Z')
 
@@ -24,7 +24,7 @@ test('allows the log level to be limited', () => {
 
 test('validates the level', () => {
   expect(() => {
-    new Logger({ level: 'derp' })
+    new Logger({ level: 'derp' as LEVEL })
   }).toThrowErrorMatchingInlineSnapshot(`"Invalid log level 'derp'"`)
 })
 
@@ -39,11 +39,15 @@ test('can log data', () => {
   )
 })
 
+interface fixture1 {
+    fixture2?: any;
+}
+
 test('handles circular references', () => {
   const spy = jest.spyOn(process.stdout, 'write').mockImplementation()
 
-  const fixture1: any = {}
-  const fixture2: any = { fixture1 }
+  const fixture1: fixture1 = {}
+  const fixture2: object = { fixture1 }
   fixture1.fixture2 = fixture2
 
   const logger = new Logger()
@@ -98,6 +102,16 @@ test('handles Sets', () => {
   )
 })
 
+interface dataError {
+  data: {
+    error: {
+      message: string,
+      name: string,
+      stack: string[],
+    }
+  }
+}
+
 test('handles Errors', () => {
   const spy = jest.spyOn(process.stdout, 'write').mockImplementation()
 
@@ -105,7 +119,7 @@ test('handles Errors', () => {
   logger.log('info', 'test', { error: new Error('Request timeout') })
 
   expect(spy).toHaveBeenCalled()
-  const log = JSON.parse(spy.mock.calls[0][0] as string)
+  const log: dataError = JSON.parse(spy.mock.calls[0][0] as string) as dataError;
   expect(log).toMatchObject({
     data: {
       error: {
@@ -127,7 +141,7 @@ test('handles Errors at the top level', () => {
   logger.log('info', 'test', new Error('Request timeout'))
 
   expect(spy).toHaveBeenCalled()
-  const log = JSON.parse(spy.mock.calls[0][0] as string)
+  const log: dataError = JSON.parse(spy.mock.calls[0][0] as string) as dataError;
   expect(log).toMatchObject({
     data: {
       message: 'Request timeout',
@@ -139,16 +153,20 @@ test('handles Errors at the top level', () => {
   })
 })
 
+class CustomError extends Error {
+    serviceName?: string;
+}
+
 test('logs additional properties on Errors', () => {
   const spy = jest.spyOn(process.stdout, 'write').mockImplementation()
 
   const logger = new Logger()
-  const error: any = new Error('Request timeout')
+  const error: CustomError = new Error('Request timeout')
   error.serviceName = 'test'
   logger.log('info', 'test', { error })
 
   expect(spy).toHaveBeenCalled()
-  const log = JSON.parse(spy.mock.calls[0][0] as string)
+  const log: dataError = JSON.parse(spy.mock.calls[0][0] as string) as dataError
   expect(log).toHaveProperty('data.error.serviceName')
 })
 
