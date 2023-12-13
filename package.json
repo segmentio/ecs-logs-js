@@ -1,6 +1,6 @@
 {
   "name": "ecs-logs-js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Simple Node.js console logger that outputs human friendly and ecs-logs compatible messages",
   "author": "Roland Warmerdam (https://roland.codes)",
   "keywords": [
