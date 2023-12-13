@@ -124,7 +124,7 @@ export class Logger {
       level: level.toUpperCase(),
       time: new Date().toISOString(),
       message,
-      data,
+      data: data,
     }
 
     // Create JSON string with all the exotic values converted to JSON safe versions

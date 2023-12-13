@@ -34,6 +34,27 @@ logger.warn('Request rate limited', { ip: '127.0.0.1' })
 logger.error('🚨 Unexpected Error', new Error('Failed to connect to Postgress'))
 ```
 
+Will log these fields at the top level:
+
+- `time`: a RFC3339 timestamp
+- `level`: the log level
+- `message`: the log message
+- `data`: an object containing any additional fields that have been logged.
+
+For example:
+
+```javascript
+logger.info("test", {some: 'data'})
+{
+    "level":"INFO",
+    "time":"2019-01-01T00:00:00.000Z",
+    "message":"test",
+    "data": {
+        "some":"data"
+    }
+}
+```
+
 ## API
 
 ### new Logger(options?)
