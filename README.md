@@ -119,3 +119,6 @@ To run the tests use `yarn test`. To run the tests in watch mode use `yarn test 
 To lint the files use `yarn lint`.
 
 To compile the TypeScript files use `yarn build`.
+
+Note, we deliberately do not have a "yarn.lock" file because this package is
+a library and should (hopefully) work with a wide range of dependencies.
