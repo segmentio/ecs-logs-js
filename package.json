@@ -21,14 +21,15 @@
     "src"
   ],
   "scripts": {
-    "prepublishOnly": "yarn clean && yarn build",
+    "prepare": "husky",
+    "prepublishOnly": "npm run clean && npm run build",
     "test": "FORCE_COLOR=1 jest",
     "lint": "eslint '**/*.ts'",
     "build": "tsc",
     "clean": "rimraf dist"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=22"
   },
   "dependencies": {
     "chalk": "^4.1.2",
@@ -47,10 +48,10 @@
     "@typescript-eslint/parser": "^6.14.0",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
-    "husky": "^4.2.3",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-date-mock": "^1.0.8",
-    "lint-staged": "^10.0.9",
+    "lint-staged": "^15.2.11",
     "prettier": "^2.0.2",
     "rimraf": "^3.0.0",
     "ts-jest": "^29.1.1",
@@ -96,11 +97,6 @@
     "testPathIgnorePatterns": [
       "<rootDir>/dist/"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "*.ts": [
