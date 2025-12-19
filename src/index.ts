@@ -19,11 +19,12 @@ const LEVELS_MAP = {
 /** Available log levels. */
 export type LEVEL = keyof typeof LEVELS_MAP
 
-interface LogLine {
+/** Structure of a log line before formatting. */
+export interface LogLine {
   level: string
   time: string
   message: string
-  data: unknown
+  data?: unknown
 }
 
 /** Checks that the level is valid */
@@ -79,6 +80,14 @@ function jsonStringifyReplacer(_key: string, value: unknown): any {
   return value
 }
 
+/** A function that writes log output. */
+export type LogWriter = (output: string) => void
+
+/** The default writer that outputs to stdout. */
+export const defaultWriter: LogWriter = (output: string) => {
+  process.stdout.write(output + '\n')
+}
+
 /** Options that can be passed to the Logger constructor. */
 export interface LoggerOptions {
   /**
@@ -91,12 +100,63 @@ export interface LoggerOptions {
    * @default process.env.NODE_ENV === 'development'
    */
   devMode?: boolean
+  /**
+   * Custom writer function for log output. Useful for testing or redirecting logs.
+   * @default defaultWriter (writes to process.stdout)
+   */
+  writer?: LogWriter
+}
+
+/**
+ * Formats a log line object into a string.
+ * @param logLineObject The log line object containing level, time, message, and optional data.
+ * @param devMode Whether to format for development mode (human-readable) or production (JSON).
+ * @returns The formatted log string.
+ */
+export function formatLogLine(logLineObject: LogLine, devMode: boolean): string {
+  // Create JSON string with all the exotic values converted to JSON safe versions
+  let logLine = safeStringify(logLineObject, jsonStringifyReplacer)
+
+  // Format the logs in a human friendly way in development mode
+  if (devMode) {
+    // Construct the main log line and add some highlighting styles
+    // Just parse the production log because it already has all the data conversions applied
+    const log: LogLine = JSON.parse(logLine) as LogLine
+    logLine = chalk.bold(`\n${log.level}: ${log.message}`)
+
+    const level = log.level.toLowerCase() as LEVEL
+    if (level === 'warn') {
+      logLine = chalk.yellow(logLine)
+    } else if (LEVELS_MAP[level] <= LEVELS_MAP.error) {
+      logLine = chalk.red(logLine)
+    }
+
+    // Convert data to a compact and readable format
+    if (log.data) {
+      let data = yaml.safeDump(log.data, { schema: yaml.JSON_SCHEMA, lineWidth: Infinity })
+
+      // Indent the data slightly
+      data = data
+        .trim()
+        .split('\n')
+        .map((line) => `  ${line}`)
+        .join('\n')
+
+      // Shorten the absolute file paths
+      data = replaceString(data, process.cwd(), '.')
+
+      logLine += `\n${data}`
+    }
+  }
+
+  return logLine
 }
 
 /** Creates a new logger instance. */
 export class Logger {
   level: LEVEL = 'debug'
   devMode = process.env.NODE_ENV === 'development'
+  private writer: LogWriter = defaultWriter
 
   constructor(options: LoggerOptions = {}) {
     if (options.level) {
@@ -106,6 +166,10 @@ export class Logger {
 
     if (options.devMode) {
       this.devMode = options.devMode
+    }
+
+    if (options.writer) {
+      this.writer = options.writer
     }
   }
 
@@ -127,41 +191,8 @@ export class Logger {
       data: data,
     }
 
-    // Create JSON string with all the exotic values converted to JSON safe versions
-    let logLine = safeStringify(logLineObject, jsonStringifyReplacer)
-
-    // Format the logs in a human friendly way in development mode
-    if (this.devMode) {
-      // Construct the main log line and add some highlighting styles
-      // Just parse the production log because it already has all the data conversions applied
-      const log: LogLine = JSON.parse(logLine) as LogLine
-      logLine = chalk.bold(`\n${log.level}: ${log.message}`)
-
-      if (level === 'warn') {
-        logLine = chalk.yellow(logLine)
-      } else if (LEVELS_MAP[level] <= LEVELS_MAP.error) {
-        logLine = chalk.red(logLine)
-      }
-
-      // Convert data to a compact and readable format
-      if (log.data) {
-        let data = yaml.safeDump(log.data, { schema: yaml.JSON_SCHEMA, lineWidth: Infinity })
-
-        // Indent the data slightly
-        data = data
-          .trim()
-          .split('\n')
-          .map((line) => `  ${line}`)
-          .join('\n')
-
-        // Shorten the absolute file paths
-        data = replaceString(data, process.cwd(), '.')
-
-        logLine += `\n${data}`
-      }
-    }
-
-    process.stdout.write(logLine + '\n')
+    const logLine = formatLogLine(logLineObject, this.devMode)
+    this.writer(logLine)
   }
 
   /**
