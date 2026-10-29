@@ -1,0 +1,49 @@
+# Built to Twilio's locked-down build standards. Agents have no direct internet
+# access; everything resolves through Artifactory mirrors, so packages pass
+# JFrog Curation (malicious-package, critical-CVE and 48-hour age policies).
+# https://backstage.twilioinfra.com/docs/default/component/internal-product-docs/building-code/artifactory/
+
+# Buildkite does NOT propagate the uploading job's agent tags to the steps it
+# uploads, so the queue has to be pinned here as well as on the upload step in
+# the pipeline's Buildkite-side configuration. A step with no queue lands on
+# `default`, which is paused, and waits forever instead of failing.
+agents:
+  queue: general-000
+
+env:
+  # Plugins must be pinned to an exact version and must appear on the central
+  # allowlist: https://github.com/twilio-internal/buildkite-plugin-allowlist
+  PLUGIN_VERSION_DOCKER: "v5.13.0"
+  # Twilio Node base image: npm and Yarn 1 already point at Artifactory.
+  NODE_IMAGE: "registry.twilio.com/library/base-node/26:26"
+
+steps:
+  - label: ":nodejs: test"
+    env:
+      # The base image already points npm and Yarn at Artifactory; set it
+      # explicitly too so the build does not silently fall back to the public
+      # registry if the image changes. Yarn 1 reads YARN_REGISTRY, not
+      # npm_config_registry.
+      npm_config_registry: "https://npmjs.artifacts.twilio.com/artifactory/api/npm/virtual-npm-twilio/"
+      YARN_REGISTRY: "https://npmjs.artifacts.twilio.com/artifactory/api/npm/virtual-npm-twilio/"
+      # Never run dependency install hooks. Also set in .npmrc/.yarnrc/.yarnrc.yml
+      # and passed as --ignore-scripts below.
+      npm_config_ignore_scripts: "true"
+      YARN_IGNORE_SCRIPTS: "true"
+    commands: |
+      echo '--- install'
+      yarn install --ignore-scripts --non-interactive
+      echo '+++ build'
+      yarn build
+      echo '+++ lint'
+      yarn lint
+      echo '+++ test'
+      yarn test
+    plugins:
+      - docker#${PLUGIN_VERSION_DOCKER}:
+          image: "${NODE_IMAGE}"
+          always-pull: true
+          # Without this the docker plugin drops the step's env block, and the
+          # registry and ignore-scripts settings above would never reach the
+          # container.
+          propagate-environment: true

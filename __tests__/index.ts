@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { advanceTo } from 'jest-date-mock'
 import { Logger, LEVEL } from '../src'
 
-advanceTo('2019-01-01T00:00:00.000Z')
+jest.useFakeTimers({ now: new Date('2019-01-01T00:00:00.000Z') })
 
 test('can log a message', () => {
   const spy = jest.spyOn(process.stdout, 'write').mockImplementation()

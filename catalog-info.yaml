@@ -1,0 +1,28 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ecs-logs-js
+  description: Simple Node.js console logger that outputs human friendly and ecs-logs compatible messages.
+  annotations:
+    github.com/project-slug: segmentio/ecs-logs-js
+    # Required so Backstage allocates this repo to a Buildkite queue with
+    # Artifactory access -- without it, builds have no agents to run on. See
+    # internal-product-docs/docs/building-code/artifactory.
+    buildkite.com/project-slug: twilio/cdp-ecs-logs-js
+    # The catalog calculates twilio.com/security-tier from these two. This is
+    # an open-source library published to npm: it is not a deployed service
+    # and stores no data.
+    twilio.com/internet-facing: 'false'
+    twilio.com/data-classification: public
+  links:
+    - url: https://github.com/segmentio/ecs-logs-js
+      title: Application Repository
+  tags:
+    - nodejs
+    - observability
+    - logging
+spec:
+  type: library
+  lifecycle: production
+  owner: group:default/sup-org-2388
+  system: cdp-observability-platform
